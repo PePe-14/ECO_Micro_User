@@ -12,22 +12,17 @@ export class UserService {
     return await this.userModel.find();
   }
 
-  async createUser(newUserDto: CreateUserDto): Promise<User> {
-    const newUser = new this.userModel(newUserDto); // Crea una instancia de User usando el DTO
-    const createdUser = await newUser.save(); // Guarda el nuevo usuario en la base de datos
-    return createdUser;
+  async createUser(newUser: CreateUserDto) {
+    const user = await this.userModel.create(newUser); 
+    return user;
   }
 
-  async findById(id: string): Promise<User> {
-    const newUser = this.userModel.findById(id); 
-    return newUser;
+  async findById(id: string) {
+    return this.userModel.findById(id); 
   }
 
-  /*
-  async deleteById(id: string): Promise<User> {
+  async deleteById(id: string) {
     return await this.userModel.findByIdAndDelete(id); 
-  }*/
-
-
+  }
   
 }
