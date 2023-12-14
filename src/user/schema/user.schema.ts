@@ -6,12 +6,6 @@ import mongoose, { Document } from 'mongoose';
   timestamps: true,
 })
 export class User extends Document{
-
-  @Prop({
-    primaryKey: true,
-    type: `auto()`,
-  })
-  id: mongoose.Schema.Types.ObjectId;
   
   @Prop({ required: true, unique: true })
   username: string;
