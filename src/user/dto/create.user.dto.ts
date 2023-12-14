@@ -10,5 +10,5 @@ export class CreateUserDto {
     @IsNotEmpty()
     @IsEmail()
     readonly email: string;
-  }
+}
   
