@@ -22,27 +22,33 @@ export class UserService {
 
   }
 
-  findOneUser(request: FindOneUserRequest): FindOneUserResponse {
+  async findOneUser(request: FindOneUserRequest): Promise<FindOneUserResponse> {
+    console.log(request);
     try{
-      const user = this.userModel.findById(request.id);
-      return { message: 'Usuario Encontrado', error: undefined };
+      const user = await this.userModel.findById(request); //request es el id
+      if(user != null){
+        return { message: 'Usuario Encontrado', error: undefined };
+      }
     }catch(error){
       return {
-        message: 'Error al crear el comentario',
-        error: undefined,
+        message: 'Usuario no existe',
+        error: 'Not Found',
       };
     } 
   }
 
-  deleteUser(request: DeleteUserRequest): DeleteUserResponse {
+  async deleteUser(request: DeleteUserRequest): Promise<DeleteUserResponse> {
     try{
-      const success = this.userModel.findByIdAndDelete(request.id);
-      return { message: 'Usuario Eliminado', error: undefined };
+      const user = await this.userModel.findById(request);  //request es el id
+      if(user != null){
+        this.userModel.findByIdAndDelete(user._id).exec();
+        return { message: 'Usuario Eliminado', error: undefined };
+      }
     }catch(error){
       return {
-        message: 'Error al crear el comentario',
-        error: undefined,
+        message: 'Usuario no existe',
+        error: 'Error al eliminar',
       };
     }
-  }
+  } 
 }
