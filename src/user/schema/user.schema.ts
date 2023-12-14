@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 @Schema({
   collection: 'usuario',
@@ -7,6 +7,12 @@ import { Document } from 'mongoose';
 })
 export class User extends Document{
 
+  @Prop({
+    primaryKey: true,
+    type: `auto()`,
+  })
+  id: mongoose.Schema.Types.ObjectId;
+  
   @Prop({ required: true, unique: true })
   username: string;
 

@@ -4,24 +4,31 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "users";
 
-export interface CreateUserDto {
-  username: string;
-  password: string;
-  email: string;
-}
-
 export interface User {
+  id: string;
   username: string;
   password: string;
   email: string;
 }
 
-export interface UserList {
-  users: User[];
+export interface CreateUserRequest {
+  username: string;
+  password: string;
+  email: string;
 }
 
-export interface FindUserRequest {
+export interface CreateUserResponse {
+  message: string;
+  error: string;
+}
+
+export interface FindOneUserRequest {
   id: string;
+}
+
+export interface FindOneUserResponse {
+  message: string;
+  error: string;
 }
 
 export interface DeleteUserRequest {
@@ -29,39 +36,37 @@ export interface DeleteUserRequest {
 }
 
 export interface DeleteUserResponse {
-  success: boolean;
-}
-
-export interface Empty {
+  message: string;
+  error: string;
 }
 
 export const USERS_PACKAGE_NAME = "users";
 
 export interface UserServiceClient {
-  findAll(request: Empty): Observable<UserList>;
+  createUser(request: CreateUserRequest): Observable<CreateUserResponse>;
 
-  createUser(request: CreateUserDto): Observable<User>;
+  findOneUser(request: FindOneUserRequest): Observable<FindOneUserResponse>;
 
-  findById(request: FindUserRequest): Observable<User>;
-
-  deleteById(request: DeleteUserRequest): Observable<DeleteUserResponse>;
+  deleteUser(request: DeleteUserRequest): Observable<DeleteUserResponse>;
 }
 
 export interface UserServiceController {
-  findAll(request: Empty): Promise<UserList> | Observable<UserList> | UserList;
+  createUser(
+    request: CreateUserRequest,
+  ): Promise<CreateUserResponse> | Observable<CreateUserResponse> | CreateUserResponse;
 
-  createUser(request: CreateUserDto): Promise<User> | Observable<User> | User;
+  findOneUser(
+    request: FindOneUserRequest,
+  ): Promise<FindOneUserResponse> | Observable<FindOneUserResponse> | FindOneUserResponse;
 
-  findById(request: FindUserRequest): Promise<User> | Observable<User> | User;
-
-  deleteById(
+  deleteUser(
     request: DeleteUserRequest,
   ): Promise<DeleteUserResponse> | Observable<DeleteUserResponse> | DeleteUserResponse;
 }
 
 export function UserServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["findAll", "createUser", "findById", "deleteById"];
+    const grpcMethods: string[] = ["createUser", "findOneUser", "deleteUser"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("UserService", method)(constructor.prototype[method], method, descriptor);
