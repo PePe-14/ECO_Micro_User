@@ -5,7 +5,6 @@ import { join } from 'path';
 import { protobufPackage } from './user/users.pb';
 
 async function bootstrap() {
-  //const app = await NestFactory.create(AppModule);
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule,
   {
       transport: Transport.GRPC,

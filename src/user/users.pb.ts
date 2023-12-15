@@ -4,6 +4,13 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "users";
 
+export interface Empty {
+}
+
+export interface Error {
+  message: string;
+}
+
 export interface User {
   id: string;
   username: string;
@@ -18,8 +25,13 @@ export interface CreateUserRequest {
 }
 
 export interface CreateUserResponse {
-  message: string;
-  error: string;
+  user: User | undefined;
+  error: Error | undefined;
+}
+
+export interface GetAllUsersResponse {
+  users: User[];
+  error: Error | undefined;
 }
 
 export interface FindOneUserRequest {
@@ -27,8 +39,8 @@ export interface FindOneUserRequest {
 }
 
 export interface FindOneUserResponse {
-  message: string;
-  error: string;
+  user: User | undefined;
+  error: Error | undefined;
 }
 
 export interface DeleteUserRequest {
@@ -36,14 +48,16 @@ export interface DeleteUserRequest {
 }
 
 export interface DeleteUserResponse {
-  message: string;
-  error: string;
+  isDeleted: boolean;
+  error: Error | undefined;
 }
 
 export const USERS_PACKAGE_NAME = "users";
 
 export interface UserServiceClient {
   createUser(request: CreateUserRequest): Observable<CreateUserResponse>;
+
+  getAllUsers(request: Empty): Observable<GetAllUsersResponse>;
 
   findOneUser(request: FindOneUserRequest): Observable<FindOneUserResponse>;
 
@@ -54,6 +68,8 @@ export interface UserServiceController {
   createUser(
     request: CreateUserRequest,
   ): Promise<CreateUserResponse> | Observable<CreateUserResponse> | CreateUserResponse;
+
+  getAllUsers(request: Empty): Promise<GetAllUsersResponse> | Observable<GetAllUsersResponse> | GetAllUsersResponse;
 
   findOneUser(
     request: FindOneUserRequest,
@@ -66,7 +82,7 @@ export interface UserServiceController {
 
 export function UserServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createUser", "findOneUser", "deleteUser"];
+    const grpcMethods: string[] = ["createUser", "getAllUsers", "findOneUser", "deleteUser"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("UserService", method)(constructor.prototype[method], method, descriptor);
